@@ -6,6 +6,7 @@ type User struct {
 	Base
 	Name     string         `json:"firstname"`
 	Surname  string         `json:"surname"`
+	Email    string         `json:"email"`
 	Dob      datatypes.Date `json:"dob"`
 	Password string         `json:"password"`
 }
