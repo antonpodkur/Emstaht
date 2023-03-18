@@ -3,22 +3,36 @@ package http
 import (
 	"net/http"
 
+	"github.com/antonpodkur/Emstaht/config"
 	"github.com/antonpodkur/Emstaht/internal/auth"
+	httpModels "github.com/antonpodkur/Emstaht/internal/auth/delivery/dto"
 	"github.com/gin-gonic/gin"
 )
 
-type authHandlers struct{}
-
-func NewAuthHandlers() auth.Handlers {
-	return &authHandlers{}
+type authHandlers struct {
+	cfg         *config.Config
+	authUsecase auth.Usecase
 }
 
+func NewAuthHandlers(cfg *config.Config, authUsecase auth.Usecase) auth.Handlers {
+	return &authHandlers{cfg: cfg, authUsecase: authUsecase}
+}
+
+//TODO: rewrite using user model with omitempty
+
 func (h *authHandlers) Register(c *gin.Context) {
-	var request RegisterRequest
+	var request httpModels.RegisterRequest
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": "hello from controller"})
+
+	user := request.MapRegisterRequestToUser()
+	_, err := h.authUsecase.Register(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	c.Status(http.StatusCreated)
 }

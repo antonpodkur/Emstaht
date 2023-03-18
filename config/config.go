@@ -26,6 +26,7 @@ func LoadConfig(filename string) (*viper.Viper, error) {
 
 	v.SetConfigName(filename)
 	v.AddConfigPath(".")
+	v.AddConfigPath("/Users/antonpodkur/Code/go/Emstaht")
 	v.AutomaticEnv()
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
