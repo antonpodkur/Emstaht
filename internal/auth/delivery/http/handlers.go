@@ -18,8 +18,17 @@ func NewAuthHandlers(cfg *config.Config, authUsecase auth.Usecase) auth.Handlers
 	return &authHandlers{cfg: cfg, authUsecase: authUsecase}
 }
 
-//TODO: rewrite using user model with omitempty
+// TODO: rewrite using user model with omitempty
 
+// Register             godoc
+// @Summary      Register new user
+// @Description  Registers new user
+// @Tags         auth
+// @Accept		 json
+// @Produce      json
+// @Param 		userDto body dto.RegisterRequest true "RegisterJson"
+// @Success      200
+// @Router       /auth/register [post]
 func (h *authHandlers) Register(c *gin.Context) {
 	var request httpModels.RegisterRequest
 
