@@ -7,11 +7,11 @@ import (
 
 type User struct {
 	Base
-	Name     string         `gorm:"size:255;not null;" json:"firstname"`
-	Surname  string         `gorm:"size:255;not null;" json:"surname"`
-	Email    string         `gorm:"size:255;not null;unique;" json:"email"`
-	Dob      datatypes.Date `json:"dob"`
-	Password string         `gorm:"not null;" json:"password"`
+	Name     string         `gorm:"size:255;not null;" json:"firstname" binding:"required"`
+	Surname  string         `gorm:"size:255;not null;" json:"surname" binding:"required"`
+	Email    string         `gorm:"size:255;not null;unique;" json:"email" binding:"required,email"`
+	Dob      datatypes.Date `json:"dob" binding:"required"`
+	Password string         `gorm:"not null;" json:"password" binding:"required,min=8"`
 }
 
 func (u *User) HashPassword() error {
@@ -28,4 +28,13 @@ func (u *User) ComparePasswords(password string) error {
 		return err
 	}
 	return nil
+}
+
+func (u *User) SanitizePassword() {
+	u.Password = ""
+}
+
+type UserWithToken struct {
+	User  *User  `json:"user"`
+	Token string `json:"token"`
 }

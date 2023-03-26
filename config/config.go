@@ -9,6 +9,11 @@ import (
 
 type Config struct {
 	Postgres PostgresConfig
+	Server   ServerConfig
+}
+
+type ServerConfig struct {
+	JwtSecretKey string
 }
 
 type PostgresConfig struct {

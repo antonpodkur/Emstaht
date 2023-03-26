@@ -5,7 +5,7 @@ import (
 
 	"github.com/antonpodkur/Emstaht/config"
 	"github.com/antonpodkur/Emstaht/internal/auth"
-	httpModels "github.com/antonpodkur/Emstaht/internal/auth/delivery/dto"
+	"github.com/antonpodkur/Emstaht/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,30 +18,50 @@ func NewAuthHandlers(cfg *config.Config, authUsecase auth.Usecase) auth.Handlers
 	return &authHandlers{cfg: cfg, authUsecase: authUsecase}
 }
 
-// TODO: rewrite using user model with omitempty
-
 // Register             godoc
 // @Summary      Register new user
 // @Description  Registers new user
 // @Tags         auth
 // @Accept		 json
 // @Produce      json
-// @Param 		userDto body dto.RegisterRequest true "RegisterJson"
+// @Param 		userDto body models.User true "RegisterJson"
 // @Success      200
 // @Router       /auth/register [post]
 func (h *authHandlers) Register(c *gin.Context) {
-	var request httpModels.RegisterRequest
+	user := &models.User{}
 
-	if err := c.ShouldBindJSON(&request); err != nil {
+	if err := c.ShouldBindJSON(user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	user := request.MapRegisterRequestToUser()
-	_, err := h.authUsecase.Register(&user)
+	_, err := h.authUsecase.Register(user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
 	c.Status(http.StatusCreated)
+}
+
+func (h *authHandlers) Login(c *gin.Context) {
+	type Login struct {
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required"`
+	}
+
+	var req Login
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	userWithToken, err := h.authUsecase.Login(&models.User{
+		Email:    req.Email,
+		Password: req.Password,
+	})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, userWithToken)
 }

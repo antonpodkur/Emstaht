@@ -61,12 +61,13 @@ func (r *authRepository) GetByID(userID uuid.UUID) (*models.User, error) {
 
 func (r *authRepository) GetByName(name string) (*models.User, error) {
 	var user *models.User
-	err := r.db.Find(&user, "name = ?", name).Error
+	err := r.db.Where("name = ?", name).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
 }
+
 func (r *authRepository) GetByEmail(email string) (*models.User, error) {
 	var user *models.User
 	err := r.db.Where("email = ?", email).First(&user).Error

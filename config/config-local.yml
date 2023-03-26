@@ -1,3 +1,6 @@
+server:
+  JwtSecretKey: secretKey
+
 postgres:
   PostgresqlHost: localhost
   PostgresqlPort: 5432
