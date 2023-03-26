@@ -37,13 +37,14 @@ func GenerateJwtToken(user *models.User, config *config.Config) (string, error) 
 	return tokenString, nil
 }
 
-func ExtractJwtFromRequest(c *gin.Context) (map[string]interface{}, error) {
+func ExtractJwtFromRequest(c *gin.Context, jwtSecretKey string) (map[string]interface{}, error) {
 	tokenString := ExtractBearerToken(c)
 
 	claims := jwt.MapClaims{}
 
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (jwtKey interface{}, err error) {
-		return jwtKey, err
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		key := []byte(jwtSecretKey)
+		return key, nil
 	})
 
 	if err != nil {

@@ -23,7 +23,7 @@ func NewAuthUsecase(cfg *config.Config, authRepository auth.Repository) auth.Use
 func (u *authUsecase) Register(user *models.User) (*models.User, error) {
 	existsUser, err := u.authRepository.GetByEmail(user.Email)
 	if existsUser != nil {
-		return nil, errors.New("User with such email already exists")
+		return nil, errors.New("user with such email already exists")
 	}
 	if err != nil {
 		return nil, err
@@ -73,7 +73,14 @@ func (u *authUsecase) Delete(userID uuid.UUID) error {
 	return nil
 }
 func (u *authUsecase) GetByID(userID uuid.UUID) (*models.User, error) {
-	return nil, nil
+	user, err := u.authRepository.GetByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	user.SanitizePassword()
+
+	return user, nil
 }
 func (u *authUsecase) GetByName(name string) (*models.User, error) {
 	return nil, nil

@@ -1,12 +1,15 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/antonpodkur/Emstaht/config"
 	"github.com/antonpodkur/Emstaht/internal/auth"
 	"github.com/antonpodkur/Emstaht/internal/models"
+	"github.com/antonpodkur/Emstaht/pkg/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type authHandlers struct {
@@ -64,4 +67,28 @@ func (h *authHandlers) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, userWithToken)
+}
+
+func (h *authHandlers) Me(c *gin.Context) {
+	jwt, err := utils.ExtractJwtFromRequest(c, h.cfg.Server.JwtSecretKey)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	userIdStr := jwt["id"].(string)
+	fmt.Println(userIdStr)
+
+	userId, err := uuid.Parse(jwt["id"].(string))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	user, err := h.authUsecase.GetByID(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	}
+
+	user.SanitizePassword()
+	c.JSON(http.StatusOK, user)
 }
