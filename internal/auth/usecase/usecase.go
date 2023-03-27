@@ -2,8 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"time"
-
 	"github.com/antonpodkur/Emstaht/config"
 	"github.com/antonpodkur/Emstaht/internal/auth"
 	"github.com/antonpodkur/Emstaht/internal/models"
@@ -28,9 +26,6 @@ func (u *authUsecase) Register(user *models.User) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
 
 	err = user.HashPassword()
 	if err != nil {
