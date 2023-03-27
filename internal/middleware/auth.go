@@ -13,8 +13,6 @@ import (
 	"github.com/google/uuid"
 )
 
-//TODO: Change c.JSON to not return golang error but json error {"error": "error message"}
-
 func (mw *MiddlewareManager) JwtAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		bearerHeader := c.Request.Header.Get("Authorization")
