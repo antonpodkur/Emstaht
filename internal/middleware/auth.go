@@ -20,19 +20,20 @@ func (mw *MiddlewareManager) JwtAuthMiddleware() gin.HandlerFunc {
 		bearerHeader := c.Request.Header.Get("Authorization")
 
 		if bearerHeader == "" {
-			c.JSON(http.StatusUnauthorized, errors.New("unauthorized"))
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is empty."})
+			return
 		}
 
 		headerParts := strings.Split(bearerHeader, " ")
 		if len(headerParts) != 2 {
-			c.JSON(http.StatusUnauthorized, errors.New("unauthorized"))
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Wrong authorization header."})
 			return
 		}
 
 		tokenString := headerParts[1]
 
 		if err := mw.validateJwtToken(c, tokenString, mw.authUsecase, mw.cfg); err != nil {
-			c.JSON(http.StatusUnauthorized, errors.New("unauthorized"))
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token validation failed."})
 			return
 		}
 

@@ -26,7 +26,7 @@ func (r *authRepository) Create(user *models.User) (*models.User, error) {
 }
 
 func (r *authRepository) Update(user *models.User) (*models.User, error) {
-	err := r.db.Create(&user).Error
+	err := r.db.Save(&user).Error
 	if err != nil {
 		return nil, err
 	}

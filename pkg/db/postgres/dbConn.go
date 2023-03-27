@@ -16,6 +16,6 @@ func NewPsqlDb(c *config.Config) (*gorm.DB, error) {
 	if err != nil {
 		log.Println("Database connected")
 	}
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.User{}, &models.Page{})
 	return db, err
 }
