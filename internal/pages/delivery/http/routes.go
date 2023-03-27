@@ -7,7 +7,7 @@ import (
 )
 
 func MapPagesRoutes(pagesGroup *gin.RouterGroup, h pages.Handlers, mw *middleware.MiddlewareManager) {
-	//pagesGroup.Use(mw.JwtAuthMiddleware())
+	pagesGroup.Use(mw.JwtAuthMiddleware())
 	pagesGroup.GET("/:userId", h.GetByUserId)
 	pagesGroup.POST("/", h.Create)
 	pagesGroup.PUT("/", h.Update)

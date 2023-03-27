@@ -21,12 +21,14 @@ func (mw *MiddlewareManager) JwtAuthMiddleware() gin.HandlerFunc {
 
 		if bearerHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is empty."})
+			c.Abort()
 			return
 		}
 
 		headerParts := strings.Split(bearerHeader, " ")
 		if len(headerParts) != 2 {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Wrong authorization header."})
+			c.Abort()
 			return
 		}
 
@@ -34,6 +36,7 @@ func (mw *MiddlewareManager) JwtAuthMiddleware() gin.HandlerFunc {
 
 		if err := mw.validateJwtToken(c, tokenString, mw.authUsecase, mw.cfg); err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token validation failed."})
+			c.Abort()
 			return
 		}
 
