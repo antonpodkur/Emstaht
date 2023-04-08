@@ -7,9 +7,11 @@ import MainBackground from './components/backgrounds/Main/MainBackground';
 const App: Component = () => {
   return (
     <div id='app'>
-      <MainBackground/>
+      {/*<MainBackground/>*/}
       <Header/>
-      <Welcome/>
+        <div class="main">
+            <Welcome/>
+        </div>
       <Footer/>
     </div>
   );

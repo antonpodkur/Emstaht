@@ -1,12 +1,11 @@
-import type { Component, Ref } from "solid-js";
+import type { Component } from "solid-js";
 import { onMount, createSignal } from "solid-js";
 import * as THREE from 'three';
-import { TetrahedronGeometry } from "three";
 import { LoadGltf } from "../Loader";
 import './mainBackground.css'
 
 const MainBackground: Component = () => {
-    let sceneRef: undefined; 
+    let sceneRef: HTMLDivElement | undefined;
     const [sizes, setSizes] = createSignal({width: 600, height: 600})
   
     onMount(async () => {
